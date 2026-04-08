@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestão de Fretes e Entregas</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <h1>Módulo: Gestão de Fretes e Entregas</h1>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="cadastro">1. Cadastro</button>
+    <button class="tab-btn" data-tab="calculo">2. Cálculo</button>
+    <button class="tab-btn" data-tab="acompanhamento">3. Acompanhamento</button>
+  </div>
+
+  <div id="cadastro" class="tab-content active card">
+    <div class="card-header">
+      <h2>Tela de Cadastro de Frete</h2>
+      <span class="badge-module">Módulo Operacional</span>
+    </div>
+
+    <form id="freteForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="origem">Origem</label>
+          <input id="origem" type="text" placeholder="Ex: São Paulo, SP" required>
+        </div>
+        <div class="form-group">
+          <label for="pesoReal">Peso Real (kg)</label>
+          <input id="pesoReal" type="number" step="0.01" min="0" placeholder="1500" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="destino">Destino</label>
+          <input id="destino" type="text" placeholder="Ex: Curitiba, PR" required>
+        </div>
+        <div class="form-group">
+          <label>Dimensões (m)</label>
+          <div class="dimensoes-group">
+            <input id="comprimento" type="number" step="0.01" min="0" placeholder="Compr." required>
+            <input id="largura" type="number" step="0.01" min="0" placeholder="Larg." required>
+            <input id="altura" type="number" step="0.01" min="0" placeholder="Alt." required>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="tarifaKg">Tarifa por kg (R$)</label>
+          <input id="tarifaKg" type="number" step="0.01" min="0" placeholder="0.80" value="0.80" required>
+        </div>
+        <div class="form-group">
+          <label for="taxasFixas">Taxas Fixas / Pedágios (R$)</label>
+          <input id="taxasFixas" type="number" step="0.01" min="0" placeholder="150.00" value="150.00" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fatorCubagem">Fator de Cubagem (kg/m³)</label>
+          <input id="fatorCubagem" type="number" step="0.01" min="0" placeholder="300" value="300" required>
+        </div>
+        <div class="form-group">
+          <label for="statusFrete">Status</label>
+          <select id="statusFrete">
+            <option value="Em Aberto">Em Aberto</option>
+            <option value="Em Trânsito">Em Trânsito</option>
+            <option value="Finalizado">Finalizado</option>
+          </select>
+        </div>
+      </div>
+    </form>
+
+    <div class="btn-container">
+      <button class="btn btn-outline" id="btnLimpar">Limpar</button>
+      <button class="btn btn-dark" id="btnCalcular">CALCULAR</button>
+      <button class="btn btn-gray" id="btnSalvar">SALVAR</button>
+    </div>
+
+    <div class="alert-info">
+      <strong>Nota Técnica:</strong> O sistema calcula automaticamente o <strong>Peso Cubado</strong>, identifica o <strong>Peso Taxado</strong> (maior entre peso real e cubado) e gera o <strong>Valor do Frete</strong>.
+    </div>
+  </div>
+
+  <div id="calculo" class="tab-content card">
+    <div class="card-header">
+      <h2>Confirmação de Cálculo</h2>
+      <span class="badge-module">Módulo Financeiro</span>
+    </div>
+
+    <div class="resumo-box">
+      <div>
+        <strong>Resumo do Frete:</strong><br><br>
+        <span id="resumoRota" style="color:#666; font-size: 13px;">Rota: -</span>
+      </div>
+      <div style="text-align: right;">
+        <br><br>
+        <span id="resumoCarga" style="color:#666; font-size: 13px;">Carga: -</span>
+      </div>
+    </div>
+
+    <div class="grid-resultados">
+      <div class="info-card">
+        <small>Peso Real</small>
+        <strong id="pesoRealResult">0,00 kg</strong>
+      </div>
+      <div class="info-card">
+        <small>Peso Cubado</small>
+        <strong id="pesoCubadoResult">0,00 kg</strong>
+      </div>
+      <div class="info-card">
+        <small>Peso Taxado</small>
+        <strong id="pesoTaxadoResult">0,00 kg</strong>
+      </div>
+      <div class="info-card">
+        <small>Tarifa por kg</small>
+        <strong id="tarifaResult">R$ 0,00</strong>
+      </div>
+    </div>
+
+    <div class="valor-box">
+      <h3>VALOR ESTIMADO DO FRETE</h3>
+      <h1 id="valorFreteResult">R$ 0,00</h1>
+      <div class="regra-cubagem" id="regraCubagemText">
+        Informe os dados e clique em CALCULAR.
+      </div>
+    </div>
+
+    <div class="btn-container" style="justify-content: flex-end; align-items: center;">
+      <button class="btn btn-link" id="btnVoltar">← Voltar e Editar Dados</button>
+      <button class="btn btn-outline" id="btnCancelarCalculo">CANCELAR</button>
+      <button class="btn btn-success" id="btnConfirmarFrete">CONFIRMAR FRETE</button>
+    </div>
+  </div>
+
+  <div id="acompanhamento" class="tab-content card">
+    <div class="card-header">
+      <h2>Acompanhamento de Entregas</h2>
+      <span class="badge-module">Painel de Gestão</span>
+    </div>
+
+    <div class="search-bar">
+      <input id="buscaFrete" type="text" placeholder="Buscar por Cód. Frete, origem ou destino...">
+      <select id="filtroStatus">
+        <option value="Todos">Todos os Status</option>
+        <option value="Em Trânsito">Em Trânsito</option>
+        <option value="Em Aberto">Em Aberto</option>
+        <option value="Finalizado">Finalizado</option>
+      </select>
+      <button class="btn btn-outline" id="btnFiltrar" style="background-color: #eee;">Filtrar</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Cód.</th>
+          <th>Origem</th>
+          <th>Destino</th>
+          <th>Status</th>
+          <th>Peso Taxado</th>
+          <th>Valor</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaFretes"></tbody>
+    </table>
+
+    <div id="emptyState" class="empty-state hidden">
+      Nenhum frete encontrado com os filtros informados.
+    </div>
+
+    <div class="footer-action">
+      <span class="footer-text">Os dados são persistidos no navegador com LocalStorage.</span>
+      <button class="btn btn-danger" id="btnLimparHistorico">LIMPAR HISTÓRICO</button>
+    </div>
+  </div>
+
+  <div class="footer-copyright">
+    SISTEMA DINÂMICO - TCC ENGENHARIA DE REQUISITOS © 2026
+  </div>
+
+  <script src="js/calculos.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
