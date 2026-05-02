@@ -9,6 +9,8 @@ function getFormData() {
     comprimento: parseFloat(el('comprimento').value),
     largura: parseFloat(el('largura').value),
     altura: parseFloat(el('altura').value),
+    distancia: parseFloat(el('distancia').value),
+    tarifaKm: parseFloat(el('tarifaKm').value),
     tarifaKg: parseFloat(el('tarifaKg').value),
     taxasFixas: parseFloat(el('taxasFixas').value),
     fatorCubagem: parseFloat(el('fatorCubagem').value),
@@ -21,15 +23,17 @@ function validarDados(dados) {
 }
 
 function preencherFormulario(frete) {
-  el('origem').value = frete.origem;
-  el('destino').value = frete.destino;
-  el('pesoReal').value = frete.pesoReal;
-  el('comprimento').value = frete.comprimento;
-  el('largura').value = frete.largura;
-  el('altura').value = frete.altura;
-  el('tarifaKg').value = frete.tarifaKg;
-  el('taxasFixas').value = frete.taxasFixas;
-  el('fatorCubagem').value = frete.fatorCubagem;
+  el('origem').value = frete.origem ?? '';
+  el('destino').value = frete.destino ?? '';
+  el('pesoReal').value = frete.pesoReal ?? '';
+  el('comprimento').value = frete.comprimento ?? '';
+  el('largura').value = frete.largura ?? '';
+  el('altura').value = frete.altura ?? '';
+  el('distancia').value = frete.distancia ?? '';
+  el('tarifaKm').value = frete.tarifaKm ?? '';
+  el('tarifaKg').value = frete.tarifaKg ?? '';
+  el('taxasFixas').value = frete.taxasFixas ?? '';
+  el('fatorCubagem').value = frete.fatorCubagem ?? '';
   el('statusFrete').value = frete.status;
 }
 
@@ -98,32 +102,6 @@ el('btnCalcular').addEventListener('click', () => {
   openTab('calculo');
 });
 
-el('btnSalvar').addEventListener('click', () => {
-  if (!calculoAtual) {
-    alert('Primeiro calcule o frete antes de salvar.');
-    return;
-  }
-
-  const novoFrete = {
-    codigo: calculoAtual.codigo || gerarCodigoFrete(),
-    ...calculoAtual
-  };
-
-  const indiceExistente = fretes.findIndex(f => f.codigo === novoFrete.codigo);
-
-  if (indiceExistente >= 0) {
-    fretes[indiceExistente] = novoFrete;
-  } else {
-    fretes.unshift(novoFrete);
-  }
-
-  salvarLocalStorage(fretes);
-  renderTabela(fretes, fretes);
-
-  alert(`Frete ${novoFrete.codigo} salvo com sucesso.`);
-  openTab('acompanhamento');
-});
-
 el('btnLimpar').addEventListener('click', () => {
   el('freteForm').reset();
   el('tarifaKg').value = '0.80';
@@ -146,8 +124,24 @@ el('btnConfirmarFrete').addEventListener('click', () => {
     return;
   }
 
-  alert('Cálculo confirmado. Clique em SALVAR para registrar o frete.');
-  openTab('cadastro');
+  const novoFrete = {
+    codigo: calculoAtual.codigo || gerarCodigoFrete(),
+    ...calculoAtual
+  };
+
+  const indiceExistente = fretes.findIndex(f => f.codigo === novoFrete.codigo);
+
+  if (indiceExistente >= 0) {
+    fretes[indiceExistente] = novoFrete;
+  } else {
+    fretes.unshift(novoFrete);
+  }
+
+  salvarLocalStorage(fretes);
+  renderTabela(fretes, fretes);
+
+  alert(`Frete ${novoFrete.codigo} confirmado e salvo com sucesso.`);
+  openTab('acompanhamento');
 });
 
 el('btnFiltrar').addEventListener('click', filtrarFretes);
@@ -167,13 +161,7 @@ el('btnLimparHistorico').addEventListener('click', () => {
 
 renderTabela(fretes, fretes);
 
-// Pré-preenchimento com o exemplo fornecido
-el('origem').value = 'São Paulo, SP';
-el('destino').value = 'Curitiba, PR';
-el('pesoReal').value = '1500';
-el('comprimento').value = '2';
-el('largura').value = '1';
-el('altura').value = '1.5';
+// Inicialização dos valores padrão
 el('tarifaKg').value = '0.80';
 el('taxasFixas').value = '150';
 el('fatorCubagem').value = '300';

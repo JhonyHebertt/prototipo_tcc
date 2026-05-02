@@ -6,6 +6,13 @@ function openTab(tabName) {
 
   el(tabName).classList.add('active');
   document.querySelector(`.tab-btn[data-tab="${tabName}"]`).classList.add('active');
+
+  if (tabName === 'cadastro') {
+    el('freteForm').reset();
+    el('tarifaKg').value = '0.80';
+    el('taxasFixas').value = '150.00';
+    el('fatorCubagem').value = '300';
+  }
 }
 
 function gerarCodigoFrete() {
@@ -28,6 +35,8 @@ function preencherTelaCalculo(resultado) {
   el('pesoRealResult').textContent = `${formatNumber(resultado.pesoReal)} kg`;
   el('pesoCubadoResult').textContent = `${formatNumber(resultado.pesoCubado)} kg`;
   el('pesoTaxadoResult').textContent = `${formatNumber(resultado.pesoTaxado)} kg`;
+  el('distanciaResult').textContent = `${formatNumber(resultado.distancia, 1)} km`;
+  el('tarifaKmResult').textContent = formatCurrency(resultado.tarifaKm);
   el('tarifaResult').textContent = formatCurrency(resultado.tarifaKg);
   el('valorFreteResult').textContent = formatCurrency(resultado.valorFrete);
 
@@ -37,7 +46,7 @@ function preencherTelaCalculo(resultado) {
 
   el('regraCubagemText').innerHTML = `
     <strong>Regra de Cubagem:</strong> ${comparativo}<br><br>
-    <strong>Fórmula:</strong> (${formatNumber(resultado.pesoTaxado)} × ${formatCurrency(resultado.tarifaKg)}) + ${formatCurrency(resultado.taxasFixas)} = <strong>${formatCurrency(resultado.valorFrete)}</strong>
+    <strong>Fórmula:</strong> (${formatNumber(resultado.distancia, 1)} × ${formatCurrency(resultado.tarifaKm)}) + (${formatNumber(resultado.pesoTaxado)} × ${formatCurrency(resultado.tarifaKg)}) + ${formatCurrency(resultado.taxasFixas)} = <strong>${formatCurrency(resultado.valorFrete)}</strong>
   `;
 }
 

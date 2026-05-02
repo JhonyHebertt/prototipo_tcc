@@ -2,13 +2,14 @@
     Sistema meramente ilustrativo, apenas com intuito de apresentar protótipos de baixa fidelidade (wireframes) para os principais cenários operacionais do módulo de 'Gestão de Fretes e Entregas', do meu TCC
 
 ## Funcionalidades
-- Cadastro de frete
+- Cadastro de frete com campos: Origem, Destino, Peso Real, Dimensões (Comprimento, Largura, Altura), Distância, Tarifa por km, Tarifa por kg, Taxas Fixas, Fator de Cubagem e Status
 - Cálculo de cubagem
 - Peso taxado automático
-- Cálculo do valor do frete
+- Cálculo do valor do frete com base em distância e peso
 - Listagem de fretes
 - Busca e filtro por status
 - Persistência local com LocalStorage
+- Confirmação de frete salva diretamente
 
 ## Fórmulas
 - Cálculo do Peso Cubado (cubagem)
@@ -19,7 +20,7 @@
     Peso Taxado (kg)=max(Peso Real (kg), Peso Cubado (kg))
 
 - Cálculo do Valor do Frete
-    Valor do Frete (R$)= (Peso Taxado (kg) × Tarifa por kg (R$/kg)) + Taxas Fixas e Pedágios (R$)
+    Valor do Frete (R$)= (Distância (km) × Tarifa por km (R$/km)) + (Peso Taxado (kg) × Tarifa por kg (R$/kg)) + Taxas Fixas e Pedágios (R$)
 
 ### Peso Cubado
 Peso Cubado = Comprimento × Largura × Altura × Fator de Cubagem
@@ -28,7 +29,7 @@ Peso Cubado = Comprimento × Largura × Altura × Fator de Cubagem
 Peso Taxado = max(Peso Real, Peso Cubado)
 
 ### Valor do Frete
-Valor do Frete = (Peso Taxado × Tarifa por kg) + Taxas Fixas
+Valor do Frete = (Distância × Tarifa por km) + (Peso Taxado × Tarifa por kg) + Taxas Fixas
 
 ## Como executar
 1. Baixe os arquivos
