@@ -18,7 +18,7 @@ body {
   background-color: var(--bg-color);
   color: var(--text-main);
   margin: 0;
-  padding: 40px;
+  padding: 28px;
 }
 
 h1 {
@@ -28,15 +28,15 @@ h1 {
 
 .tabs {
   display: flex;
-  gap: 10px;
-  margin-bottom: 30px;
+  gap: 8px;
+  margin-bottom: 22px;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 15px;
   flex-wrap: wrap;
 }
 
 .tab-btn {
-  padding: 10px 20px;
+  padding: 8px 14px;
   border: none;
   background-color: #e0e0e0;
   color: #555;
@@ -54,7 +54,7 @@ h1 {
   background-color: #fff;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 30px;
+  padding: 22px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.05);
   max-width: 1100px;
 }
@@ -64,8 +64,8 @@ h1 {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--border-color);
-  padding-bottom: 15px;
-  margin-bottom: 20px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -87,14 +87,14 @@ h1 {
 
 .form-row {
   display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
 }
 
 .form-group {
   flex: 1;
-  min-width: 220px;
+  min-width: 170px;
   display: flex;
   flex-direction: column;
 }
@@ -105,17 +105,22 @@ h1 {
   margin-bottom: 5px;
 }
 
-..form-group input, .form-group select {
+.form-group input, .form-group select {
   width: 100%;
-  padding: 10px;
+  padding: 8px;
   border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 14px;
 }
 
+.form-group input[readonly] {
+  background-color: #f1f3f5;
+  color: var(--text-light);
+}
+
 .dimensoes-group {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -127,20 +132,25 @@ h1 {
 .btn-container {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 30px;
-  padding-top: 20px;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 14px;
   border-top: 1px solid var(--border-color);
   flex-wrap: wrap;
 }
 
 .btn {
-  padding: 10px 20px;
+  padding: 8px 14px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
   font-size: 14px;
+}
+
+.btn-small {
+  padding: 6px 10px;
+  font-size: 12px;
 }
 
 .btn-outline { background: #fff; border: 1px solid var(--border-color); color: #555; }
@@ -153,8 +163,8 @@ h1 {
 .alert-info {
   background-color: var(--alert-bg);
   border-left: 4px solid var(--alert-border);
-  padding: 15px;
-  margin-top: 20px;
+  padding: 12px;
+  margin-top: 14px;
   font-size: 13px;
   color: var(--text-main);
 }
@@ -163,10 +173,10 @@ h1 {
 
 .resumo-box {
   background-color: #f9f9f9;
-  padding: 20px;
+  padding: 14px;
   border-radius: 6px;
   border: 1px solid var(--border-color);
-  margin-bottom: 20px;
+  margin-bottom: 14px;
   display: flex;
   justify-content: space-between;
   gap: 16px;
@@ -175,10 +185,10 @@ h1 {
 
 .valor-box {
   text-align: center;
-  padding: 40px 20px;
+  padding: 24px 16px;
   border: 1px dashed var(--border-color);
   border-radius: 6px;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 .valor-box h3 { margin: 0 0 10px 0; font-size: 14px; color: #666; }
@@ -186,8 +196,8 @@ h1 {
 
 .regra-cubagem {
   display: inline-block;
-  margin-top: 20px;
-  padding: 10px 15px;
+  margin-top: 14px;
+  padding: 8px 12px;
   border: 1px solid #f6c23e;
   background-color: #fdfcee;
   font-size: 12px;
@@ -198,13 +208,13 @@ h1 {
 
 .search-bar {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 8px;
+  margin-bottom: 14px;
   flex-wrap: wrap;
 }
 
 .search-bar input, .search-bar select {
-  padding: 10px;
+  padding: 8px;
   border: 1px solid var(--border-color);
   border-radius: 4px;
 }
@@ -219,8 +229,8 @@ table {
   font-size: 13px;
 }
 
-th { text-align: left; padding: 12px 10px; border-bottom: 2px solid var(--border-color); color: #666; font-size: 11px; text-transform: uppercase; }
-td { padding: 15px 10px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+th { text-align: left; padding: 10px 8px; border-bottom: 2px solid var(--border-color); color: #666; font-size: 11px; text-transform: uppercase; }
+td { padding: 10px 8px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
 
 .status-badge {
   padding: 4px 8px;
@@ -234,6 +244,8 @@ td { padding: 15px 10px; border-bottom: 1px solid var(--border-color); vertical-
 .bg-yellow { background-color: #fff3cd; color: #856404; }
 .bg-blue { background-color: #cce5ff; color: #004085; }
 .bg-green { background-color: #d4edda; color: #155724; }
+.bg-red { background-color: #f8d7da; color: #842029; }
+.bg-gray { background-color: #e2e3e5; color: #41464b; }
 
 .action-link {
   color: #6c757d;
@@ -248,11 +260,51 @@ td { padding: 15px 10px; border-bottom: 1px solid var(--border-color); vertical-
 
 .status-select {
   width: 100%;
-  padding: 8px 10px;
+  padding: 7px 8px;
   border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 13px;
   background: #fff;
+}
+
+.location-input {
+  width: 180px;
+  padding: 7px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.action-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.timeline-box {
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  background-color: #fafafa;
+}
+
+.timeline-box h3 {
+  margin: 0 0 10px 0;
+  color: #555;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.timeline-box ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-light);
+  font-size: 13px;
+}
+
+.timeline-box li + li {
+  margin-top: 8px;
 }
 
 .footer-action {
@@ -260,8 +312,8 @@ td { padding: 15px 10px; border-bottom: 1px solid var(--border-color); vertical-
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid var(--border-color);
-  padding-top: 20px;
-  margin-top: 30px;
+  padding-top: 14px;
+  margin-top: 18px;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -274,16 +326,16 @@ td { padding: 15px 10px; border-bottom: 1px solid var(--border-color); vertical-
 
 .grid-resultados {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 15px;
-  margin: 20px 0;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 14px 0;
 }
 
 .info-card {
   background: #fafafa;
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  padding: 16px;
+  padding: 12px;
 }
 
 .info-card small {
@@ -293,12 +345,12 @@ td { padding: 15px 10px; border-bottom: 1px solid var(--border-color); vertical-
 }
 
 .info-card strong {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .empty-state {
   text-align: center;
-  padding: 30px;
+  padding: 20px;
   color: #777;
   border: 1px dashed var(--border-color);
   border-radius: 8px;

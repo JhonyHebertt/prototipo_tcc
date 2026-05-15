@@ -3,13 +3,19 @@ function calcularFrete(dados) {
   const pesoTaxado = Math.max(dados.pesoReal, pesoCubado);
   const valorFrete = (dados.distancia * dados.tarifaKm) + (pesoTaxado * dados.tarifaKg) + dados.taxasFixas;
   const baseCalculo = pesoTaxado === dados.pesoReal ? 'Peso Real' : 'Peso Cubado';
+  const exigeAprovacao = valorFrete > dados.limiteAprovacao;
+  const status = exigeAprovacao ? 'Pendente de Aprovação' : dados.status;
+  const statusAprovacao = exigeAprovacao ? 'Pendente' : 'Dispensada';
 
   return {
     ...dados,
+    status,
     pesoCubado,
     pesoTaxado,
     valorFrete,
-    baseCalculo
+    baseCalculo,
+    exigeAprovacao,
+    statusAprovacao
   };
 }
 

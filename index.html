@@ -13,6 +13,9 @@
     <button class="tab-btn active" data-tab="cadastro">1. Cadastro</button>
     <button class="tab-btn" data-tab="calculo">2. Cálculo</button>
     <button class="tab-btn" data-tab="acompanhamento">3. Acompanhamento</button>
+    <button class="tab-btn" data-tab="relatorios">4. Relatórios</button>
+    <button class="tab-btn" data-tab="pendentes">5. Pendentes</button>
+    <button class="tab-btn" data-tab="regras">6. Regras</button>
   </div>
 
   <div id="cadastro" class="tab-content active card">
@@ -24,12 +27,45 @@
     <form id="freteForm">
       <div class="form-row">
         <div class="form-group">
+          <label for="cepOrigem">CEP Origem</label>
+          <input id="cepOrigem" type="text" inputmode="numeric" maxlength="9" placeholder="Ex: 01001-000" required>
+        </div>
+        <div class="form-group">
           <label for="origem">Origem</label>
-          <input id="origem" type="text" placeholder="Ex: São Paulo, SP" required>
+          <input id="origem" type="text" placeholder="Cidade/UF preenchidos pelo CEP" readonly required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="cepDestino">CEP Destino</label>
+          <input id="cepDestino" type="text" inputmode="numeric" maxlength="9" placeholder="Ex: 80010-000" required>
         </div>
         <div class="form-group">
           <label for="destino">Destino</label>
-          <input id="destino" type="text" placeholder="Ex: Curitiba, PR" required>
+          <input id="destino" type="text" placeholder="Cidade/UF preenchidos pelo CEP" readonly required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="descricaoMercadoria">Descrição da Mercadoria</label>
+          <input id="descricaoMercadoria" type="text" placeholder="Ex: Componentes eletrônicos" required>
+        </div>
+        <div class="form-group">
+          <label for="tipoMercadoria">Tipo de Mercadoria</label>
+          <select id="tipoMercadoria" required>
+            <option value="">Selecione</option>
+            <option value="Carga Geral">Carga Geral</option>
+            <option value="Frágil">Frágil</option>
+            <option value="Perecível">Perecível</option>
+            <option value="Alto Valor">Alto Valor</option>
+            <option value="Químicos">Químicos</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="volumes">Volumes</label>
+          <input id="volumes" type="number" step="1" min="1" placeholder="1" value="1" required>
         </div>
       </div>
 
@@ -61,6 +97,21 @@
 
       <div class="form-row">
         <div class="form-group">
+          <label for="dataAgendamento">Data de Agendamento</label>
+          <input id="dataAgendamento" type="date">
+        </div>
+        <div class="form-group">
+          <label for="horaAgendamento">Hora</label>
+          <input id="horaAgendamento" type="time">
+        </div>
+        <div class="form-group">
+          <label for="localizacaoAtual">Localização Atual</label>
+          <input id="localizacaoAtual" type="text" placeholder="Ex: Centro de Distribuição - SP">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
           <label for="tarifaKg">Tarifa por kg (R$)</label>
           <input id="tarifaKg" type="number" step="0.01" min="0" placeholder="0.80" value="0.80" required>
         </div>
@@ -79,8 +130,10 @@
           <label for="statusFrete">Status</label>
           <select id="statusFrete">
             <option value="Em Aberto">Em Aberto</option>
+            <option value="Pendente de Aprovação">Pendente de Aprovação</option>
             <option value="Em Trânsito">Em Trânsito</option>
             <option value="Finalizado">Finalizado</option>
+            <option value="Reprovado">Reprovado</option>
           </select>
         </div>
       </div>
@@ -92,7 +145,7 @@
     </div>
 
     <div class="alert-info">
-      <strong>Nota Técnica:</strong> O sistema calcula automaticamente o <strong>Peso Cubado</strong>, identifica o <strong>Peso Taxado</strong> (maior entre peso real e cubado) e gera o <strong>Valor do Frete</strong>.
+      <strong>Nota Técnica:</strong> O sistema calcula automaticamente o <strong>Peso Cubado</strong>, identifica o <strong>Peso Taxado</strong> (maior entre peso real e cubado), valida o horário de agendamento e sinaliza fretes acima do limite cadastrado em Regras.
     </div>
   </div>
 
@@ -106,10 +159,14 @@
       <div>
         <strong>Resumo do Frete:</strong><br><br>
         <span id="resumoRota" style="color:#666; font-size: 13px;">Rota: -</span>
+        <br>
+        <span id="resumoMercadoria" style="color:#666; font-size: 13px;">Mercadoria: -</span>
       </div>
       <div style="text-align: right;">
         <br><br>
         <span id="resumoCarga" style="color:#666; font-size: 13px;">Carga: -</span>
+        <br>
+        <span id="resumoAgendamento" style="color:#666; font-size: 13px;">Agendamento: -</span>
       </div>
     </div>
 
@@ -138,6 +195,10 @@
         <small>Tarifa por kg</small>
         <strong id="tarifaResult">R$ 0,00</strong>
       </div>
+      <div class="info-card">
+        <small>Aprovação</small>
+        <strong id="aprovacaoResult">-</strong>
+      </div>
     </div>
 
     <div class="valor-box">
@@ -148,8 +209,13 @@
       </div>
     </div>
 
+    <div class="timeline-box">
+      <h3>Histórico da Entrega</h3>
+      <ul id="historicoEntrega"></ul>
+    </div>
+
     <div class="btn-container" style="justify-content: flex-end; align-items: center;">
-      <button class="btn btn-link" id="btnVoltar">← Voltar e Editar Dados</button>
+      <button class="btn btn-link" id="btnVoltar">← Voltar ao Cadastro</button>
       <button class="btn btn-outline" id="btnCancelarCalculo">CANCELAR</button>
       <button class="btn btn-success" id="btnConfirmarFrete">CONFIRMAR FRETE</button>
     </div>
@@ -165,9 +231,11 @@
       <input id="buscaFrete" type="text" placeholder="Buscar por Cód. Frete, origem ou destino...">
       <select id="filtroStatus">
         <option value="Todos">Todos os Status</option>
+        <option value="Pendente de Aprovação">Pendente de Aprovação</option>
         <option value="Em Trânsito">Em Trânsito</option>
         <option value="Em Aberto">Em Aberto</option>
         <option value="Finalizado">Finalizado</option>
+        <option value="Reprovado">Reprovado</option>
       </select>
       <button class="btn btn-outline" id="btnFiltrar" style="background-color: #eee;">Filtrar</button>
     </div>
@@ -179,6 +247,8 @@
           <th>Origem</th>
           <th>Destino</th>
           <th>Status</th>
+          <th>Localização</th>
+          <th>Agendamento</th>
           <th>Peso Taxado</th>
           <th>Valor</th>
           <th>Ações</th>
@@ -194,6 +264,110 @@
     <div class="footer-action">
       <span class="footer-text">Os dados são persistidos no navegador com LocalStorage.</span>
       <button class="btn btn-danger" id="btnLimparHistorico">LIMPAR HISTÓRICO</button>
+    </div>
+  </div>
+
+  <div id="relatorios" class="tab-content card">
+    <div class="card-header">
+      <h2>Relatórios Gerenciais</h2>
+      <span class="badge-module">Consulta Gerencial</span>
+    </div>
+
+    <div class="grid-resultados">
+      <div class="info-card">
+        <small>Total de Fretes</small>
+        <strong id="relTotalFretes">0</strong>
+      </div>
+      <div class="info-card">
+        <small>Valor Total</small>
+        <strong id="relValorTotal">R$ 0,00</strong>
+      </div>
+      <div class="info-card">
+        <small>Ticket Médio</small>
+        <strong id="relTicketMedio">R$ 0,00</strong>
+      </div>
+      <div class="info-card">
+        <small>Peso Taxado Total</small>
+        <strong id="relPesoTotal">0,00 kg</strong>
+      </div>
+      <div class="info-card">
+        <small>Pendentes de Aprovação</small>
+        <strong id="relPendentes">0</strong>
+      </div>
+      <div class="info-card">
+        <small>Fretes Agendados</small>
+        <strong id="relAgendados">0</strong>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Quantidade</th>
+          <th>Valor Consolidado</th>
+          <th>Peso Consolidado</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaRelatorioStatus"></tbody>
+    </table>
+  </div>
+
+  <div id="pendentes" class="tab-content card">
+    <div class="card-header">
+      <h2>Fretes Pendentes de Aprovação</h2>
+      <span class="badge-module">Aprovação Gerencial</span>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Cód.</th>
+          <th>Origem</th>
+          <th>Destino</th>
+          <th>Mercadoria</th>
+          <th>Limite</th>
+          <th>Valor</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaPendentes"></tbody>
+    </table>
+
+    <div id="emptyPendentes" class="empty-state hidden">
+      Nenhum frete pendente de aprovação.
+    </div>
+  </div>
+
+  <div id="regras" class="tab-content card">
+    <div class="card-header">
+      <h2>Regras de Negócio</h2>
+      <span class="badge-module">Parâmetros Operacionais</span>
+    </div>
+
+    <form id="regrasForm">
+      <div class="form-row compact-row">
+        <div class="form-group">
+          <label for="regraLimiteAprovacao">Limite para Aprovação (R$)</label>
+          <input id="regraLimiteAprovacao" type="number" step="0.01" min="0" value="2500.00" required>
+        </div>
+        <div class="form-group">
+          <label for="regraHoraInicial">Hora Inicial</label>
+          <input id="regraHoraInicial" type="time" value="08:00" required>
+        </div>
+        <div class="form-group">
+          <label for="regraHoraFinal">Hora Final</label>
+          <input id="regraHoraFinal" type="time" value="18:00" required>
+        </div>
+      </div>
+    </form>
+
+    <div class="btn-container">
+      <button class="btn btn-success" id="btnSalvarRegras">SALVAR REGRAS</button>
+    </div>
+
+    <div class="alert-info">
+      <strong>Regra ativa:</strong> fretes acima do limite entram como pendentes. Ao confirmar, horários fora da janela permitida são bloqueados.
     </div>
   </div>
 
