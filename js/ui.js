@@ -30,7 +30,7 @@ function formatDateTime(value) {
 
 function preencherTelaCalculo(resultado) {
   el('resumoRota').textContent = `Rota: ${resultado.origem} -> ${resultado.destino}`;
-  el('resumoMercadoria').textContent = `Mercadoria: ${resultado.descricaoMercadoria || '-'} | ${resultado.tipoMercadoria || '-'} | ${resultado.volumes || 0} volume(s)`;
+  el('resumoMercadoria').textContent = `Mercadoria: ${resultado.descricaoMercadoria || '-'} | ${resultado.tipoMercadoria || '-'}`;
   el('resumoCarga').textContent = `Carga: ${formatNumber(resultado.pesoReal)}kg | ${formatNumber(resultado.comprimento)}x${formatNumber(resultado.largura)}x${formatNumber(resultado.altura)}m`;
   el('resumoAgendamento').textContent = resultado.janelaAgendamento
     ? `Agendamento: ${formatDateTime(resultado.janelaAgendamento)}`

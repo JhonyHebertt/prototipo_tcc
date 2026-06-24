@@ -14,7 +14,6 @@ function getFormData() {
     destino: el('destino').value.trim(),
     descricaoMercadoria: el('descricaoMercadoria').value.trim(),
     tipoMercadoria: el('tipoMercadoria').value,
-    volumes: parseInt(el('volumes').value, 10),
     pesoReal: parseFloat(el('pesoReal').value),
     comprimento: parseFloat(el('comprimento').value),
     largura: parseFloat(el('largura').value),
@@ -41,7 +40,18 @@ function validarDados(dados) {
     'destino',
     'descricaoMercadoria',
     'tipoMercadoria',
-    'volumes',
+    'pesoReal',
+    'comprimento',
+    'largura',
+    'altura',
+    'distancia',
+    'tarifaKm',
+    'tarifaKg',
+    'taxasFixas',
+    'fatorCubagem'
+  ];
+
+  const camposNumericos = [
     'pesoReal',
     'comprimento',
     'largura',
@@ -58,8 +68,15 @@ function validarDados(dados) {
     return value !== '' && value !== null && !Number.isNaN(value);
   });
 
-  if (!camposValidos) return false;
-  return true;
+  const valoresPositivos = camposNumericos.every(campo => {
+    const value = dados[campo];
+    return typeof value === 'number' && !Number.isNaN(value) && value >= 0;
+  });
+
+  if (!camposValidos) return { valido: false, erro: 'Preencha todos os campos obrigatórios antes de calcular.' };
+  if (!valoresPositivos) return { valido: false, erro: 'Os campos de medidas, peso e tarifas não podem ser negativos.' };
+  
+  return { valido: true };
 }
 
 function horarioAgendamentoValido(frete) {
@@ -133,7 +150,6 @@ function preencherFormularioTemporario(frete) {
   el('destino').value = frete.destino ?? '';
   el('descricaoMercadoria').value = frete.descricaoMercadoria ?? '';
   el('tipoMercadoria').value = frete.tipoMercadoria ?? '';
-  el('volumes').value = frete.volumes ?? '1';
   el('pesoReal').value = frete.pesoReal ?? '';
   el('comprimento').value = frete.comprimento ?? '';
   el('largura').value = frete.largura ?? '';
@@ -227,7 +243,6 @@ function resetarFormulario() {
   el('destino').value = '';
   el('descricaoMercadoria').value = '';
   el('tipoMercadoria').value = '';
-  el('volumes').value = '1';
   el('pesoReal').value = '';
   el('comprimento').value = '';
   el('largura').value = '';
@@ -312,8 +327,10 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 el('btnCalcular').addEventListener('click', () => {
   const dados = getFormData();
 
-  if (!validarDados(dados)) {
-    alert('Preencha todos os campos obrigatórios antes de calcular.');
+  const validacao = validarDados(dados);
+
+  if (!validacao.valido) {
+    alert(validacao.erro);
     return;
   }
 
@@ -400,8 +417,16 @@ el('btnConfirmarFrete').addEventListener('click', () => {
   openTab('acompanhamento');
 });
 
+function debounce(func, timeout = 300){
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+  };
+}
+
 el('btnFiltrar').addEventListener('click', filtrarFretes);
-el('buscaFrete').addEventListener('input', filtrarFretes);
+el('buscaFrete').addEventListener('input', debounce(filtrarFretes, 300));
 el('filtroStatus').addEventListener('change', filtrarFretes);
 el('cepOrigem').addEventListener('blur', () => buscarCep('cepOrigem', 'origem', 'origem'));
 el('cepDestino').addEventListener('blur', () => buscarCep('cepDestino', 'destino', 'destino'));
