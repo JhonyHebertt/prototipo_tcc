@@ -106,7 +106,60 @@ function formatarCep(cep) {
 }
 
 function cidadeUf(dadosCep) {
-  return `${dadosCep.localidade}, ${dadosCep.uf}`;
+  return `${dadosCep.city}, ${dadosCep.state}`;
+}
+
+function calcularDistanciaCoords(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Raio da Terra em km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  return R * c;
+}
+
+function verificarECalcularDistancia() {
+  const cepOrigem = el('cepOrigem');
+  const cepDestino = el('cepDestino');
+  
+  if (cepOrigem.dataset.lat && cepOrigem.dataset.lon && cepDestino.dataset.lat && cepDestino.dataset.lon) {
+    const lat1 = parseFloat(cepOrigem.dataset.lat);
+    const lon1 = parseFloat(cepOrigem.dataset.lon);
+    const lat2 = parseFloat(cepDestino.dataset.lat);
+    const lon2 = parseFloat(cepDestino.dataset.lon);
+    
+    if (!isNaN(lat1) && !isNaN(lon1) && !isNaN(lat2) && !isNaN(lon2)) {
+      const distanciaReta = calcularDistanciaCoords(lat1, lon1, lat2, lon2);
+      const distanciaComCorrecao = distanciaReta * 1.2; // +20% para simular rodovias
+      
+      // O campo input type="number" do HTML espera ponto como separador decimal
+      el('distancia').value = distanciaComCorrecao.toFixed(1);
+    }
+  }
+}
+
+async function buscarCoordenadas(cep, cidade, estado) {
+  try {
+    const formatCep = `${cep.slice(0, 5)}-${cep.slice(5)}`;
+    const resCep = await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${formatCep}&country=Brazil&format=json`);
+    const dataCep = await resCep.json();
+    if (dataCep && dataCep.length > 0) {
+      return { lat: dataCep[0].lat, lon: dataCep[0].lon };
+    }
+  } catch(e) {}
+  
+  try {
+    const resCidade = await fetch(`https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(cidade)}&state=${encodeURIComponent(estado)}&country=Brazil&format=json`);
+    const dataCidade = await resCidade.json();
+    if (dataCidade && dataCidade.length > 0) {
+      return { lat: dataCidade[0].lat, lon: dataCidade[0].lon };
+    }
+  } catch(e) {}
+
+  return null;
 }
 
 async function buscarCep(campoCep, campoResultado, rotulo) {
@@ -127,19 +180,41 @@ async function buscarCep(campoCep, campoResultado, rotulo) {
   el(campoResultado).value = 'Buscando...';
 
   try {
-    const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const resposta = await fetch(`https://brasilapi.com.br/api/cep/v2/${cep}`);
+    
+    if (!resposta.ok) {
+      throw new Error('CEP não encontrado');
+    }
+    
     const dadosCep = await resposta.json();
 
-    if (dadosCep.erro) {
-      el(campoResultado).value = '';
-      alert(`CEP de ${rotulo} não encontrado.`);
-      return;
-    }
-
     el(campoResultado).value = cidadeUf(dadosCep);
+    
+    // Salvar as coordenadas para o cálculo de distância
+    let lat = '';
+    let lon = '';
+
+    if (dadosCep.location && dadosCep.location.coordinates && dadosCep.location.coordinates.latitude) {
+      lat = dadosCep.location.coordinates.latitude;
+      lon = dadosCep.location.coordinates.longitude;
+    } else {
+      // Fallback caso a BrasilAPI não tenha as coordenadas do CEP
+      const coords = await buscarCoordenadas(cep, dadosCep.city, dadosCep.state);
+      if (coords) {
+        lat = coords.lat;
+        lon = coords.lon;
+      }
+    }
+    
+    el(campoCep).dataset.lat = lat || '';
+    el(campoCep).dataset.lon = lon || '';
+    
+    verificarECalcularDistancia();
   } catch (error) {
     el(campoResultado).value = '';
-    alert(`Não foi possível consultar o CEP de ${rotulo}. Verifique a conexão e tente novamente.`);
+    el(campoCep).dataset.lat = '';
+    el(campoCep).dataset.lon = '';
+    alert(`Não foi possível consultar o CEP de ${rotulo}. ${error.message}`);
   }
 }
 
@@ -256,6 +331,11 @@ function resetarFormulario() {
   el('dataAgendamento').value = '';
   el('horaAgendamento').value = '';
   el('localizacaoAtual').value = '';
+  
+  el('cepOrigem').dataset.lat = '';
+  el('cepOrigem').dataset.lon = '';
+  el('cepDestino').dataset.lat = '';
+  el('cepDestino').dataset.lon = '';
 }
 
 function preencherFormularioRegras() {
