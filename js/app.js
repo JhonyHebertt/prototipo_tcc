@@ -76,6 +76,11 @@ function validarDados(dados) {
   if (!camposValidos) return { valido: false, erro: 'Preencha todos os campos obrigatórios antes de calcular.' };
   if (!valoresPositivos) return { valido: false, erro: 'Os campos de medidas, peso e tarifas não podem ser negativos.' };
   
+  if (dados.pesoReal > regrasNegocio.maxPesoReal) return { valido: false, erro: `Peso Real excede o limite permitido de ${regrasNegocio.maxPesoReal} kg.` };
+  if (dados.comprimento > regrasNegocio.maxComprimento) return { valido: false, erro: `Comprimento excede o limite permitido de ${regrasNegocio.maxComprimento} m.` };
+  if (dados.largura > regrasNegocio.maxLargura) return { valido: false, erro: `Largura excede o limite permitido de ${regrasNegocio.maxLargura} m.` };
+  if (dados.altura > regrasNegocio.maxAltura) return { valido: false, erro: `Altura excede o limite permitido de ${regrasNegocio.maxAltura} m.` };
+
   return { valido: true };
 }
 
@@ -342,6 +347,10 @@ function preencherFormularioRegras() {
   el('regraLimiteAprovacao').value = Number(regrasNegocio.limiteAprovacao).toFixed(2);
   el('regraHoraInicial').value = regrasNegocio.horaInicial;
   el('regraHoraFinal').value = regrasNegocio.horaFinal;
+  el('regraMaxPesoReal').value = regrasNegocio.maxPesoReal;
+  el('regraMaxComprimento').value = regrasNegocio.maxComprimento;
+  el('regraMaxLargura').value = regrasNegocio.maxLargura;
+  el('regraMaxAltura').value = regrasNegocio.maxAltura;
 }
 
 function atualizarPainel() {
@@ -515,13 +524,22 @@ el('btnSalvarRegras').addEventListener('click', () => {
   const limiteAprovacao = parseFloat(el('regraLimiteAprovacao').value);
   const horaInicial = el('regraHoraInicial').value;
   const horaFinal = el('regraHoraFinal').value;
+  const maxPesoReal = parseFloat(el('regraMaxPesoReal').value);
+  const maxComprimento = parseFloat(el('regraMaxComprimento').value);
+  const maxLargura = parseFloat(el('regraMaxLargura').value);
+  const maxAltura = parseFloat(el('regraMaxAltura').value);
 
   if (Number.isNaN(limiteAprovacao) || !horaInicial || !horaFinal || horaInicial >= horaFinal) {
     alert('Informe limite, hora inicial e hora final válidos.');
     return;
   }
+  
+  if (Number.isNaN(maxPesoReal) || Number.isNaN(maxComprimento) || Number.isNaN(maxLargura) || Number.isNaN(maxAltura)) {
+    alert('Informe limites de peso e dimensões válidos.');
+    return;
+  }
 
-  regrasNegocio = { limiteAprovacao, horaInicial, horaFinal };
+  regrasNegocio = { limiteAprovacao, horaInicial, horaFinal, maxPesoReal, maxComprimento, maxLargura, maxAltura };
   salvarRegras(regrasNegocio);
   alert('Regras salvas com sucesso.');
 });

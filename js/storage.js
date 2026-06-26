@@ -135,7 +135,11 @@ function carregarRegras() {
   const regrasPadrao = {
     limiteAprovacao: 2500,
     horaInicial: '08:00',
-    horaFinal: '18:00'
+    horaFinal: '18:00',
+    maxPesoReal: 5000,
+    maxComprimento: 2.5,
+    maxLargura: 2.5,
+    maxAltura: 2.5
   };
 
   if (!dados) {

@@ -356,6 +356,20 @@
           <input id="regraHoraFinal" type="time" value="18:00" required>
         </div>
       </div>
+      <div class="form-row compact-row">
+        <div class="form-group">
+          <label for="regraMaxPesoReal">Lim. Peso Real (kg)</label>
+          <input id="regraMaxPesoReal" type="number" step="0.01" min="0" value="5000" required>
+        </div>
+        <div class="form-group">
+          <label>Limites Dimensões (m)</label>
+          <div class="dimensoes-group">
+            <input id="regraMaxComprimento" type="number" step="0.01" min="0" placeholder="Compr." value="2.5" required title="Comprimento">
+            <input id="regraMaxLargura" type="number" step="0.01" min="0" placeholder="Larg." value="2.5" required title="Largura">
+            <input id="regraMaxAltura" type="number" step="0.01" min="0" placeholder="Alt." value="2.5" required title="Altura">
+          </div>
+        </div>
+      </div>
     </form>
 
     <div class="btn-container">
